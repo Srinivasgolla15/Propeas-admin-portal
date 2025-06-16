@@ -9,7 +9,7 @@ import Button from '../../components/ui/Button';
 import Badge from '../../components/ui/Badge';
 import Modal from '../../components/ui/Modal';
 import Input from '../../components/ui/Input';
-import { PlusCircle, Edit3, ToggleLeft, ToggleRight, CheckCircle, AlertTriangle } from 'lucide-react';
+import { PlusCircle, Edit, ToggleLeft, ToggleRight, CheckCircle, AlertTriangle } from 'lucide-react';
 
 const ServicePackagesPage: React.FC = () => {
   const { currentUser } = useAuth();
@@ -191,7 +191,7 @@ const ServicePackagesPage: React.FC = () => {
       render: pkg => (
         <div className="space-x-1">
           <Button variant="ghost" size="sm" onClick={() => handleOpenModal(pkg)} title="Edit Package">
-            <Edit3 size={16} />
+            <Edit size={16} />
           </Button>
           <Button variant="ghost" size="sm" onClick={() => toggleActiveStatus(pkg)} title={pkg.isActive ? 'Deactivate' : 'Activate'}>
             {pkg.isActive ? <ToggleRight size={18} className="text-green-500" /> : <ToggleLeft size={18} className="text-red-500" />}
