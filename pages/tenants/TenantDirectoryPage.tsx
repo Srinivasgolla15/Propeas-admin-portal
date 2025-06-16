@@ -1,10 +1,10 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import { Tenant, Property, TableColumn, UserRole } from '../../types';
 import {
   collection,
   onSnapshot,
-  addDoc,getDoc,
-  getDocs,
+  addDoc,
+  getDoc,
   updateDoc,
   doc,
   Timestamp
@@ -16,7 +16,8 @@ import Badge from '../../components/ui/Badge';
 import Modal from '../../components/ui/Modal';
 import Input from '../../components/ui/Input';
 import Card from '../../components/ui/Card';
-import { Edit, Eye, Trash, UserPlus, Search, AlertTriangle, CheckCircle, Info } from 'lucide-react';
+import { Search, Edit, Info, UserPlus, CheckCircle, AlertTriangle } from 'lucide-react'; // Only keep used icons
+import { formatINR } from '../../utils/currencyUtils'; // Removed unused parseCurrency
 import { useAuth } from '../../contexts/AuthContext';
 
 interface AuditLogEntry {
@@ -42,10 +43,10 @@ const TenantDirectoryPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [editingTenant, setEditingTenant] = useState<Tenant | null>(null);
   const [viewingTenant, setViewingTenant] = useState<Tenant | null>(null);
-  const [formData, setFormData] = useState<Partial<Tenant>>({
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+  const [formData, setFormData] = useState<Partial<Tenant> & Record<string, any>>({
     name: '', email: '', phone: '', propertyId: '', status: 'Prospective',
     rentAmount: 0, moveInDate: new Date().toISOString().split('T')[0],
     leaseEndDate: '', lastPaymentDate: '', securityDeposit: 0
@@ -175,17 +176,46 @@ const TenantDirectoryPage: React.FC = () => {
     );
   };
 
-  const handleCloseViewModal = () => {
+  const handleCloseViewModal = useCallback(() => {
     setIsViewModalOpen(false);
     setViewingTenant(null);
-  };
+  }, []);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: name === 'rentAmount' || name === 'securityDeposit' ? parseFloat(value) || 0 : value
+      [name]: value
     }));
+  };
+
+  const handleCurrencyInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    // Remove non-numeric characters except decimal point
+    const numericValue = value.replace(/[^0-9.]/g, '');
+    // Ensure only one decimal point
+    const parts = numericValue.split('.');
+    const formattedValue = parts.length > 1 
+      ? `${parts[0]}.${parts[1]}` 
+      : parts[0];
+    
+    setFormData(prev => ({
+      ...prev,
+      [name]: formattedValue
+    }));
+  };
+  
+  const handleCurrencyBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    if (value) {
+      const numValue = parseFloat(value);
+      if (!isNaN(numValue)) {
+        setFormData(prev => ({
+          ...prev,
+          [name]: numValue.toFixed(2)
+        }));
+      }
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -248,7 +278,7 @@ const TenantDirectoryPage: React.FC = () => {
     }
   };
 
-  const tenantStatusOptions: Tenant['status'][] = ['Active', 'Prospective', 'Notice Given', 'Inactive', 'Evicted'];
+  const tenantStatusOptions: Tenant['status'][] = useMemo(() => ['Active', 'Prospective', 'Notice Given', 'Inactive', 'Evicted'], []);
 
   const columns: TableColumn<Tenant>[] = [
     {
@@ -268,7 +298,7 @@ const TenantDirectoryPage: React.FC = () => {
     { key: 'email', header: 'Email', render: (t) => t.email || 'N/A' },
     { key: 'phone', header: 'Phone', render: (t) => t.phone || 'N/A' },
     { key: 'propertyName', header: 'Property', render: (t) => t.propertyName || 'N/A' },
-    { key: 'rentAmount', header: 'Rent', render: (t) => t.rentAmount != null ? `$${t.rentAmount.toFixed(2)}` : 'N/A' },
+    { key: 'rentAmount', header: 'Rent', render: (t) => t.rentAmount != null ? formatINR(t.rentAmount) : 'N/A' },
     { key: 'moveInDate', header: 'Move-In', render: (t) => t.moveInDate ? new Date(t.moveInDate).toLocaleDateString() : 'N/A' },
     { key: 'leaseEndDate', header: 'Lease End', render: (t) => t.leaseEndDate ? new Date(t.leaseEndDate).toLocaleDateString() : 'N/A' },
     { key: 'lastPaymentDate', header: 'Last Payment', render: (t) => t.lastPaymentDate ? new Date(t.lastPaymentDate).toLocaleDateString() : 'N/A' },
@@ -326,21 +356,72 @@ const TenantDirectoryPage: React.FC = () => {
                   {properties.map(p => <option key={p.id} value={p.id}>{p.address}</option>)}
                 </select>
               </div>
-              <Input label="Rent Amount ($)" name="rentAmount" type="number" value={formData.rentAmount || 0} onChange={handleInputChange} required />
-              <Input label="Security Deposit ($)" name="securityDeposit" type="number" value={formData.securityDeposit || 0} onChange={handleInputChange} />
-              <Input label="Move-in Date" name="moveInDate" type="date" value={formData.moveInDate || ''} onChange={handleInputChange} required />
-              <Input label="Lease End Date" name="leaseEndDate" type="date" value={formData.leaseEndDate || ''} onChange={handleInputChange} />
-              <Input label="Last Payment Date" name="lastPaymentDate" type="date" value={formData.lastPaymentDate || ''} onChange={handleInputChange} />
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">₹</span>
+                <Input 
+                  label="Rent Amount" 
+                  name="rentAmount" 
+                  type="text"
+                  inputMode="decimal"
+                  value={formData.rentAmount || ''} 
+                  onChange={handleCurrencyInputChange}
+                  onBlur={handleCurrencyBlur}
+                  className="pl-8"
+                  placeholder="0.00"
+                  required 
+                />
+              </div>
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">₹</span>
+                <Input 
+                  label="Security Deposit" 
+                  name="securityDeposit" 
+                  type="text"
+                  inputMode="decimal"
+                  value={formData.securityDeposit || ''}
+                  onChange={handleCurrencyInputChange}
+                  onBlur={handleCurrencyBlur}
+                  className="pl-8"
+                  placeholder="0.00"
+                />
+              </div>
+              <Input 
+                label="Move-in Date" 
+                name="moveInDate" 
+                type="date" 
+                value={formData.moveInDate || ''} 
+                onChange={handleInputChange} 
+                required 
+              />
+              <Input 
+                label="Lease End Date" 
+                name="leaseEndDate" 
+                type="date" 
+                value={formData.leaseEndDate || ''} 
+                onChange={handleInputChange} 
+              />
               <div>
-                <label htmlFor="status" className="block text-sm font-medium mb-1">Status</label>
-                <select id="status" name="status" value={formData.status || 'Prospective'} onChange={handleInputChange} className="block w-full px-3 py-2 border rounded-md text-sm">
-                  {tenantStatusOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                <label htmlFor="status" className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                <select
+                  id="status"
+                  name="status"
+                  value={formData.status || 'Prospective'}
+                  onChange={handleInputChange}
+                  className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                >
+                  {tenantStatusOptions.map(status => (
+                    <option key={status} value={status}>
+                      {status}
+                    </option>
+                  ))}
                 </select>
               </div>
             </div>
             <div className="mt-6 flex justify-end space-x-3">
-              <Button type="button" variant="secondary" onClick={handleCloseModal}>Cancel</Button>
-              <Button type="submit" variant="primary" leftIcon={<UserPlus size={16} />}>
+              <Button type="button" variant="secondary" onClick={handleCloseModal}>
+                Cancel
+              </Button>
+              <Button type="submit" variant="primary">
                 {editingTenant ? 'Save Changes' : 'Add Tenant'}
               </Button>
             </div>
@@ -374,31 +455,45 @@ const TenantDirectoryPage: React.FC = () => {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-600">Rent Amount</label>
-                <p className="text-sm">{viewingTenant.rentAmount != null ? `$${viewingTenant.rentAmount.toFixed(2)}` : 'N/A'}</p>
+                <p className="text-sm font-medium">
+                  {viewingTenant.rentAmount != null ? formatINR(viewingTenant.rentAmount) : 'N/A'}
+                  <span className="text-xs text-gray-500 ml-1">/month</span>
+                </p>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-600">Security Deposit</label>
-                <p className="text-sm">{viewingTenant.securityDeposit != null ? `$${viewingTenant.securityDeposit.toFixed(2)}` : 'N/A'}</p>
+                <p className="text-sm font-medium">
+                  {viewingTenant.securityDeposit != null ? formatINR(viewingTenant.securityDeposit) : 'N/A'}
+                  {viewingTenant.rentAmount && viewingTenant.securityDeposit && (
+                    <span className="text-xs text-gray-500 ml-1">
+                      ({(viewingTenant.securityDeposit / viewingTenant.rentAmount).toFixed(0)} months rent)
+                    </span>
+                  )}
+                </p>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-600">Move-in Date</label>
-                <p className="text-sm">{viewingTenant.moveInDate ? new Date(viewingTenant.moveInDate).toLocaleDateString() : 'N/A'}</p>
+                <p className="text-sm">
+                  {viewingTenant.moveInDate ? new Date(viewingTenant.moveInDate).toLocaleDateString() : 'N/A'}
+                </p>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-600">Lease End Date</label>
-                <p className="text-sm">{viewingTenant.leaseEndDate ? new Date(viewingTenant.leaseEndDate).toLocaleDateString() : 'N/A'}</p>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-600">Last Payment Date</label>
-                <p className="text-sm">{viewingTenant.lastPaymentDate ? new Date(viewingTenant.lastPaymentDate).toLocaleDateString() : 'N/A'}</p>
+                <p className="text-sm">
+                  {viewingTenant.leaseEndDate ? new Date(viewingTenant.leaseEndDate).toLocaleDateString() : 'N/A'}
+                </p>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-600">Status</label>
-                <Badge color={getStatusBadgeColor(viewingTenant.status)}>{viewingTenant.status || 'N/A'}</Badge>
+                <Badge color={getStatusBadgeColor(viewingTenant.status)}>
+                  {viewingTenant.status || 'N/A'}
+                </Badge>
               </div>
             </div>
             <div className="mt-6 flex justify-end">
-              <Button type="button" variant="secondary" onClick={handleCloseViewModal}>Close</Button>
+              <Button type="button" variant="secondary" onClick={handleCloseViewModal}>
+                Close
+              </Button>
             </div>
           </div>
         </Modal>

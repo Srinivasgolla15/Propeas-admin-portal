@@ -19,6 +19,7 @@ import Modal from '../../components/ui/Modal';
 import Card from '../../components/ui/Card';
 import Input from '../../components/ui/Input';
 import { Info, Search, Download, Edit3 } from 'lucide-react';
+import { formatINR } from '../../utils/currencyUtils';
 import { debounce } from 'lodash';
 import { toast } from 'react-toastify';
 import Papa from 'papaparse';
@@ -155,7 +156,7 @@ const PaymentVerificationPage: React.FC = () => {
       TransactionID: p.transactionId || 'N/A',
       ClientName: p.clientName || 'N/A',
       Service: p.serviceName || 'N/A',
-      Amount: p.amount ? `$${p.amount.toFixed(2)}` : 'N/A',
+      Amount: p.amount ? formatINR(p.amount) : 'N/A',
       Date: p.paymentDate?.toDate ? p.paymentDate.toDate().toLocaleDateString() : 'N/A',
       Status: p.status || 'N/A',
     }));
@@ -172,7 +173,7 @@ const PaymentVerificationPage: React.FC = () => {
   const columns: TableColumn<Payment>[] = [
     { key: 'clientName', header: 'Client Name', render: (p) => p.clientName || 'N/A' },
     { key: 'serviceName', header: 'Service', render: (p) => p.serviceName || 'N/A' },
-    { key: 'amount', header: 'Amount', render: (p) => `$${p.amount?.toFixed(2)}` },
+    { key: 'amount', header: 'Amount', render: (p) => formatINR(p.amount || 0) },
     {
       key: 'paymentDate',
       header: 'Date',
@@ -241,7 +242,7 @@ const PaymentVerificationPage: React.FC = () => {
             <p><strong>Transaction ID:</strong> {selectedPayment.transactionId}</p>
             <p><strong>Client Name:</strong> {selectedPayment.clientName}</p>
             <p><strong>Service:</strong> {selectedPayment.serviceName}</p>
-            <p><strong>Amount:</strong> ${selectedPayment.amount?.toFixed(2)}</p>
+            <p><strong>Amount:</strong> {formatINR(selectedPayment.amount || 0)}</p>
             <p><strong>Status:</strong> {selectedPayment.status}</p>
             <p><strong>Date:</strong> {selectedPayment.paymentDate?.toDate ? selectedPayment.paymentDate.toDate().toLocaleString() : 'N/A'}</p>
           </div>

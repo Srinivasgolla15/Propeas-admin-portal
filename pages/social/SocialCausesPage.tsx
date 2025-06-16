@@ -7,7 +7,8 @@ import { Timestamp } from 'firebase/firestore';
 import Card from '../../components/ui/Card';
 import Button from '../../components/ui/Button';
 import ProgressBar from '../../components/ui/ProgressBar';
-import { Gift, Target, CalendarClock, FileText, PlusCircle, X, Archive } from 'lucide-react';
+import { Gift, Target, CalendarClock, FileText, PlusCircle, X, Archive, IndianRupee } from 'lucide-react';
+import { formatINR } from '../../utils/currencyUtils';
 
 // Define Donation type
 interface Donation {
@@ -166,7 +167,7 @@ const ReportModal: React.FC<ReportModalProps> = ({ campaignId, campaigns, donati
         </div>
         <div className="space-y-4">
           <p className="text-sm text-foreground/80 dark:text-dark-foreground/80">
-            <strong>Total Raised:</strong> ${totalRaised.toLocaleString()}
+            <strong>Total Raised:</strong> {formatINR(totalRaised)}
           </p>
           <p className="text-sm text-foreground/80 dark:text-dark-foreground/80">
             <strong>Number of Donations:</strong> {campaignDonations.length}
@@ -188,7 +189,7 @@ const ReportModal: React.FC<ReportModalProps> = ({ campaignId, campaigns, donati
                   {campaignDonations.map(donation => (
                     <tr key={donation.id} className="border-b dark:border-dark-secondary/50">
                       <td className="p-2">{new Date(donation.createdAt).toLocaleDateString()}</td>
-                      <td className="p-2">${donation.amount.toLocaleString()}</td>
+                      <td className="p-2">{formatINR(donation.amount)}</td>
                       <td className="p-2">{donation.userId}</td>
                     </tr>
                   ))}
@@ -431,13 +432,13 @@ const SocialCausesPage: React.FC = () => {
               <span className="text-foreground/70 dark:text-dark-foreground/70 flex items-center">
                 <Target size={16} className="mr-2 opacity-70" /> Goal:
               </span>
-              <span className="font-semibold text-foreground dark:text-dark-foreground">${campaign.goal.toLocaleString()}</span>
+              <span className="font-semibold text-foreground dark:text-dark-foreground">{formatINR(campaign.goal)}</span>
             </div>
             <div className="flex items-center justify-between text-sm">
               <span className="text-foreground/70 dark:text-dark-foreground/70 flex items-center">
                 <Gift size={16} className="mr-2 opacity-70" /> Raised:
               </span>
-              <span className="font-semibold text-green-600 dark:text-green-400">${raisedAmount.toLocaleString()}</span>
+              <span className="font-semibold text-green-600 dark:text-green-400">{formatINR(raisedAmount)}</span>
             </div>
             <div className="flex items-center justify-between text-sm">
               <span className="text-foreground/70 dark:text-dark-foreground/70 flex items-center">
@@ -510,7 +511,7 @@ const SocialCausesPage: React.FC = () => {
         <Card title="Overall Donation Summary" className="mt-8">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
             <div>
-              <p className="text-3xl font-bold text-green-600 dark:text-green-400">${donationSummary.totalDonated.toLocaleString()}</p>
+              <p className="text-3xl font-bold text-green-600 dark:text-green-400">{formatINR(donationSummary.totalDonated)}</p>
               <p className="text-sm text-foreground/70 dark:text-dark-foreground/70">Total Donated This Year</p>
             </div>
             <div>

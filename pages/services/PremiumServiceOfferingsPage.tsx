@@ -7,6 +7,7 @@ import Card from '../../components/ui/Card';
 import Button from '../../components/ui/Button';
 import Badge from '../../components/ui/Badge';
 import { Check, Star, ArrowRight } from 'lucide-react';
+import { formatINR } from '../../utils/currencyUtils';
 
 const PremiumServiceOfferingsPage: React.FC = () => {
   const [offerings, setOfferings] = useState<ServicePackage[]>([]);
@@ -54,7 +55,7 @@ const PremiumServiceOfferingsPage: React.FC = () => {
         
         <div className="mb-4">
             <p className="text-3xl font-extrabold text-foreground dark:text-dark-foreground">
-                ${offering.price.toLocaleString()}
+                {formatINR(offering.price)}
                 <span className="text-sm font-normal text-foreground/70 dark:text-dark-foreground/70">/{offering.billingCycle}</span>
             </p>
         </div>

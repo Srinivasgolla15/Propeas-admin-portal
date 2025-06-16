@@ -9,7 +9,8 @@ import Button from '../../components/ui/Button';
 import Badge from '../../components/ui/Badge';
 import Modal from '../../components/ui/Modal';
 import Input from '../../components/ui/Input';
-import { PlusCircle, Edit, ToggleLeft, ToggleRight, CheckCircle, AlertTriangle } from 'lucide-react';
+import { PlusCircle, Edit, ToggleLeft, ToggleRight, CheckCircle, AlertTriangle, IndianRupee } from 'lucide-react';
+import { formatINR } from '../../utils/currencyUtils';
 
 const ServicePackagesPage: React.FC = () => {
   const { currentUser } = useAuth();
@@ -181,7 +182,7 @@ const ServicePackagesPage: React.FC = () => {
 
   const columns: TableColumn<ServicePackage>[] = [
     { key: 'name', header: 'Name', render: p => <span className="font-medium">{p.name}</span> },
-    { key: 'price', header: 'Price', render: p => `$${p.price.toFixed(2)}` },
+    { key: 'price', header: 'Price', render: p => formatINR(p.price, 2) },
     { key: 'billingCycle', header: 'Billing Cycle' },
     { key: 'features', header: 'Features', render: p => p.features.join(', ') },
     { key: 'isActive', header: 'Status', render: p => <Badge color={p.isActive ? 'green' : 'red'}>{p.isActive ? 'Active' : 'Inactive'}</Badge> },
@@ -253,7 +254,28 @@ const ServicePackagesPage: React.FC = () => {
             className="w-full p-2 border rounded-md bg-background dark:bg-dark-card text-foreground dark:text-dark-foreground border-gray-300 dark:border-gray-600"
           />
 
-          <Input label="Price" name="price" type="number" value={formData.price || 0} onChange={handleInputChange} required />
+          <div>
+            <label htmlFor="price" className="block text-sm font-medium mb-1">
+              Price
+            </label>
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <IndianRupee className="h-4 w-4 text-foreground/70 dark:text-dark-foreground/70" />
+              </div>
+              <Input
+                id="price"
+                name="price"
+                type="number"
+                value={formData.price || ''}
+                onChange={handleInputChange}
+                placeholder="999.00"
+                min="0"
+                step="0.01"
+                className="w-full pl-8"
+                required
+              />
+            </div>
+          </div>
 
           <div>
             <label htmlFor="billingCycle" className="block text-sm font-medium mb-1">Billing Cycle</label>

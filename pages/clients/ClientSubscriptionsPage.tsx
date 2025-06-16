@@ -17,6 +17,7 @@ import Button from '../../components/ui/Button';
 import Badge from '../../components/ui/Badge';
 import Modal from '../../components/ui/Modal';
 import { PlusCircle, XCircle, AlertTriangle, CheckCircle } from 'lucide-react';
+import { formatINR } from '../../utils/currencyUtils';
 
 const ClientSubscriptionsPage: React.FC = () => {
   const [clients, setClients] = useState<Client[]>([]);
@@ -166,8 +167,8 @@ const ClientSubscriptionsPage: React.FC = () => {
   const getStatusBadgeColor = (status: Subscription['status']) => {
     switch (status) {
       case 'Active': return 'green';
-      case 'Pending Activation': return 'blue';
-      case 'PastDue': return 'yellow';
+      case 'Inactive': return 'blue';
+      case 'Rejected': return 'yellow';
       case 'Cancelled': return 'red';
       default: return 'gray';
     }
@@ -175,7 +176,7 @@ const ClientSubscriptionsPage: React.FC = () => {
 
   const columns: TableColumn<Subscription>[] = [
     { key: 'servicePackageName', header: 'Package', render: s => <span className="font-medium">{s.servicePackageName}</span> },
-    { key: 'priceAtSubscription', header: 'Price', render: s => `$${s.priceAtSubscription.toFixed(2)} (${s.billingCycle})` },
+    { key: 'priceAtSubscription', header: 'Price', render: s => `${formatINR(s.priceAtSubscription || 0)} (${s.billingCycle})` },
     {
       key: 'startDate',
       header: 'Start Date',
