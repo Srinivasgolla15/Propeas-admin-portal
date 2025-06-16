@@ -1,0 +1,6 @@
+{
+  "name": "Real Estate Admin Dashboard",
+  "description": "A professional admin dashboard for managing clients, properties, subscriptions, and operations for a real estate automation system. Features include dashboard widgets, client management, property verification, financial tracking, and social cause monitoring.",
+  "requestFramePermissions": [],
+  "prompt": ""
+}

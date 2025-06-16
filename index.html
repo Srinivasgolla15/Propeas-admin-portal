@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Propeas - Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              primary: {
+                DEFAULT: 'hsl(0, 0%, 0%)', // Black
+                foreground: 'hsl(0, 0%, 100%)', // White  
+              },
+              secondary: { 
+                DEFAULT: 'hsl(0, 0%, 96%)', // Light Gray (for main content area bg in light mode)
+                foreground: 'hsl(0, 0%, 15%)', // Dark Gray Text
+              },
+              background: 'hsl(0, 0%, 98%)', // Very Light Gray (Page Background in light mode)
+              foreground: 'hsl(0, 0%, 15%)', // Dark Gray Text
+              card: { 
+                DEFAULT: 'hsl(0, 0%, 100%)', // White (Card bg in light mode)
+                foreground: 'hsl(0, 0%, 15%)', // Dark Gray Text
+              },
+              // Dark mode colors
+              dark: {
+                primary: { // Accent color for dark mode
+                  DEFAULT: 'hsl(210, 90%, 60%)', // A brighter blue for primary actions
+                  foreground: 'hsl(0, 0%, 100%)', // White text on primary
+                },
+                secondary: { // Main content area background in dark mode
+                  DEFAULT: 'hsl(0, 0%, 8%)',   // Dark Gray (e.g. page content background)
+                  foreground: 'hsl(0, 0%, 95%)', // Light Gray/White text
+                },
+                background: 'hsl(0, 0%, 4%)', // Very Dark Gray/Almost Black (Overall Page Background)
+                foreground: 'hsl(0, 0%, 95%)', // Light Gray/White text
+                card: { // Card, Sidebar, Header background in dark mode
+                  DEFAULT: 'hsl(0, 0%, 12%)',  // Slightly Lighter Dark Gray (for cards)
+                  foreground: 'hsl(0, 0%, 95%)', // Light Gray/White text
+                },
+              }
+            },
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+            },
+          },
+        },
+        plugins: [],
+      }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./styles/global.css">
+  <script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@^19.1.0",
+    "react-dom/": "https://esm.sh/react-dom@^19.1.0/",
+    "react/": "https://esm.sh/react@^19.1.0/",
+    "react-router-dom": "https://esm.sh/react-router-dom@^7.6.1",
+    "framer-motion": "https://esm.sh/framer-motion@^12.15.0",
+    "lucide-react": "https://esm.sh/lucide-react@^0.511.0",
+    "recharts": "https://esm.sh/recharts@^2.15.3"
+  }
+}
+</script>
+</head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+  </body>
+</html><link rel="stylesheet" href="index.css">
+<script src="index.tsx" type="module"></script>

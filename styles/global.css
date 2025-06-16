@@ -1,0 +1,20 @@
+
+/* Using Tailwind's @tailwind directives in a CSS file is standard practice for including base, components, and utilities.
+   However, for this CDN-only setup, Tailwind is loaded via <script> in index.html.
+   This file can be kept minimal or used for very specific global overrides not easily achievable with Tailwind utility classes.
+   For this exercise, we'll assume Tailwind loaded via CDN handles base styles correctly.
+   If you were using a build process (e.g., Vite, Create React App with PostCSS), you'd have:
+   @tailwind base;
+   @tailwind components;
+   @tailwind utilities;
+*/
+
+html {
+  font-size: 106.25%; /* Approx 17px if browser default is 16px. This makes 1rem = 17px. */
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  /* Tailwind's bg-background and text-foreground should handle this,
+     but as a fallback or for non-Tailwind-styled root elements */
+}
