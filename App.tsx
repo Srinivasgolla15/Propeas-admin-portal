@@ -20,8 +20,8 @@ import UserManagementPage from './pages/users/UserManagementPage';
 import RolePermissionsPage from './pages/users/RolePermissionsPage'; 
 import AllClientsPage from './pages/clients/AllClientsPage'; 
 import ClientSubscriptionsPage from './pages/clients/ClientSubscriptionsPage'; 
-import AssignPropertyToEmployeePage from './pages/employees/AssignPropertyToEmployeePage'; 
-import EmployeeAvailabilityPage from './pages/employees/EmployeeAvailabilityPage'; 
+// import AssignPropertyToEmployeePage from './pages/employees/AssignPropertyToEmployeePage'; 
+// import EmployeeAvailabilityPage from './pages/employees/EmployeeAvailabilityPage'; 
 import AllEmployeesPage from './pages/employees/allemployees';
 // EmployeeAssignmentLogsPage import removed
 
@@ -54,7 +54,7 @@ import CallbackRequestsPage from './pages/crm/CallbackRequestsPage';
 import ClientSupportTicketsPage from './pages/crm/ClientSupportTicketsPage'; 
 
 // Settings
-import AppConfigurationsPage from './pages/settings/AppConfigurationsPage'; 
+// import AppConfigurationsPage from './pages/settings/AppConfigurationsPage'; 
 
 // Audit/History
 // PlatformAuditLogsPage import removed
@@ -153,7 +153,7 @@ const App: React.FC = () => {
                     <ClientSubscriptionsPage />
                  </ProtectedRoute>
               } />
-              <Route path="/users/employees/assign-property" element={
+              {/* <Route path="/users/employees/assign-property" element={
                 <ProtectedRoute allowedRoles={[UserRole.SuperAdmin, UserRole.Admin, UserRole.Operations]}>
                   <AssignPropertyToEmployeePage />
                 </ProtectedRoute>
@@ -162,7 +162,7 @@ const App: React.FC = () => {
                  <ProtectedRoute allowedRoles={[UserRole.SuperAdmin, UserRole.Admin, UserRole.Operations]}>
                     <EmployeeAvailabilityPage />
                  </ProtectedRoute>
-              } />
+              } /> */}
               <Route path ="/users/employees/EmployeeAssignmentLogs" element={
                 <ProtectedRoute allowedRoles={[UserRole.SuperAdmin, UserRole.Admin, UserRole.Operations]}>
                   <EmployeeAssignmentLogsPage />
@@ -252,12 +252,12 @@ const App: React.FC = () => {
 
 
               {/* Settings */}
-              <Route path="/settings/app-configurations" element={
+              {/* <Route path="/settings/app-configurations" element={
                 <ProtectedRoute allowedRoles={[UserRole.SuperAdmin, UserRole.Admin]}>
                  <AppConfigurationsPage />
                 </ProtectedRoute>
               } />
-              <Route path="/settings" element={<Navigate to="/settings/app-configurations" replace />} />
+              <Route path="/settings" element={<Navigate to="/settings/app-configurations" replace />} /> */}
 
               
               {/* CRM */}
