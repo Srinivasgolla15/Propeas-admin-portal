@@ -13,6 +13,7 @@ import Badge from '../../components/ui/Badge';
 import Modal from '../../components/ui/Modal';
 import Input from '../../components/ui/Input';
 import { Info, Edit, Search } from 'lucide-react';
+import { formatINR } from '../../utils/currencyUtils';
 import { Popover, PopoverContent, PopoverTrigger } from '../../components/ui/Popover';
 import { toast } from '../../components/ui/Toast'; // Assume a toast component for notifications
 
@@ -445,7 +446,7 @@ const AllClientsPage: React.FC = () => {
                     <li key={sub.id}>
                       <strong>{sub.servicePackageName}</strong> ({sub.billingCycle})<br />
                       Status: {sub.status}<br />
-                      Price: ${sub.priceAtSubscription.toLocaleString()}<br />
+                      Price: {formatINR(sub.priceAtSubscription || 0)}<br />
                       Start: {sub.startDate?.toDate().toLocaleDateString() || 'N/A'}<br />
                       Renews: {sub.renewsOn?.toDate().toLocaleDateString() || 'N/A'}<br />
                       Created: {sub.createdAt?.toDate().toLocaleDateString() || 'N/A'}<br />

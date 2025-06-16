@@ -1,7 +1,7 @@
 
 
 import React from 'react';
-import { Users, Home, FileCheck, DollarSign, Heart, UserCheck, BriefcaseBusiness, Target, CheckSquare, ListTodo, ListChecks, FileClock, Building, Activity, MailWarning, PhoneCall, Gift, BookUser, Contact, LifeBuoy } from 'lucide-react';
+import { Users, Home, FileCheck, IndianRupee, UserCheck, BriefcaseBusiness, Target, FileClock, MailWarning, PhoneCall, Gift, Contact, LifeBuoy } from 'lucide-react'; // Cleaned up unused imports
 import { Client, Property, Payment, SocialCauseCampaign, DashboardWidgetData, User, UserRole, Lead, ServicePackage, ServiceInquiry, CallbackRequest, Subscription, AppSetting, RolePermission, PermissionId, ALL_PERMISSIONS, EmployeeSchedule, AssignmentLog, Donation, BillingReportSummary, RevenueDataPoint, Tenant, Lease, RentPaymentRecord, ClientTicket, ClientTicketCategory, ClientTicketPriority, ClientTicketStatus, AuditLogEntry } from '../types';
 
 const MOCK_DELAY = 300; // ms
@@ -870,7 +870,7 @@ export const fetchDashboardWidgets = (role: UserRole): Promise<DashboardWidgetDa
           { title: 'Properties Managed', value: verifiedProperties.toString(), icon: React.createElement(Home, { size: 22 }), trend: 2, trendDirection: 'up', period: 'last month', actionLink: '/properties/verified' },
           { title: 'Active Tenants', value: activeTenantsCount.toString(), icon: React.createElement(Contact, { size: 22 }), trend: 3, trendDirection: 'up', period: 'last month', actionLink: '/tenants/directory'},
           { title: 'Pending Verifications', value: pendingVerifications.toString(), icon: React.createElement(FileClock, { size: 22 }), trend: -10, trendDirection: 'down', period: 'last week', actionLink: '/properties/pending-verifications' },
-          { title: 'Subscription Revenue (MTD)', value: `$${totalRevenueMTD.toLocaleString()}`, icon: React.createElement(DollarSign, { size: 22 }), trend: 8, trendDirection: 'up', period: 'last month MTD', actionLink: '/finance/billing-reports' },
+          { title: 'Subscription Revenue (MTD)', value: `₹${totalRevenueMTD.toLocaleString()}`, icon: React.createElement(IndianRupee, { size: 22 }), trend: 8, trendDirection: 'up', period: 'last month MTD', actionLink: '/finance/billing-reports' },
           { title: 'Active Leads', value: activeLeadsCount, icon: React.createElement(Target, { size: 22 }), actionLink: '/crm/leads'},
           { title: 'Open Support Tickets', value: openSupportTickets.toString(), icon: React.createElement(LifeBuoy, { size: 22 }), actionLink: '/crm/support-tickets' }
         );
@@ -879,7 +879,7 @@ export const fetchDashboardWidgets = (role: UserRole): Promise<DashboardWidgetDa
       if (role === UserRole.SuperAdmin) {
         widgets.push(
             { title: 'Total Platform Users', value: mockUsers.length.toString(), icon: React.createElement(UserCheck, {size: 22}), actionLink: '/users/manage-all' },
-            { title: 'Total Donations (All Time)', value: `$${mockDonations.filter(d=>d.status === 'Completed').reduce((sum,d)=>sum+d.amount,0).toLocaleString()}`, icon: React.createElement(Gift, {size: 22}), actionLink: '/social-causes/donations'}
+            { title: 'Total Donations (All Time)', value: `₹${mockDonations.filter(d=>d.status === 'Completed').reduce((sum,d)=>sum+d.amount,0).toLocaleString()}`, icon: React.createElement(Gift, {size: 22}), actionLink: '/social-causes/donations'}
         );
       }
 

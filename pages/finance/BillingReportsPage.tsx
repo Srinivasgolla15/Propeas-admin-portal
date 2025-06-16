@@ -8,7 +8,8 @@ import Badge from '../../components/ui/Badge';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LineChart, Line,
 } from 'recharts';
-import { Download, FileText, CalendarDays, AlertTriangle } from 'lucide-react';
+import { Download, FileText, CalendarDays, AlertTriangle, Search } from 'lucide-react';
+import { formatINR } from '../../utils/currencyUtils';
 import { getFirestore, collection, getDocs, query, where, Timestamp } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 
@@ -135,7 +136,7 @@ const BillingReportsPage: React.FC = () => {
     { key: 'transactionId', header: 'Txn ID', render: p => <span className="text-xs font-mono">{p.transactionId}</span> },
     { key: 'clientName', header: 'Client' },
     { key: 'serviceName', header: 'Service' },
-    { key: 'amount', header: 'Amount', render: p => `$${p.amount.toFixed(2)}` },
+    { key: 'amount', header: 'Amount', render: p => formatINR(p.amount || 0) },
     { key: 'paymentDate', header: 'Date', render: p => {
       const dateObj = p.paymentDate && typeof (p.paymentDate as any).toDate === 'function'
         ? (p.paymentDate as any).toDate()
@@ -178,7 +179,7 @@ const BillingReportsPage: React.FC = () => {
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4 py-4">
               <div>
                 <div className="text-xs text-muted-foreground">Total Revenue</div>
-                <div className="text-lg font-semibold">${reportSummary.totalRevenue.toFixed(2)}</div>
+                <div className="text-lg font-semibold">{formatINR(reportSummary.totalRevenue)}</div>
               </div>
               <div>
                 <div className="text-xs text-muted-foreground">Verified Payments</div>
@@ -190,7 +191,7 @@ const BillingReportsPage: React.FC = () => {
               </div>
               <div>
                 <div className="text-xs text-muted-foreground">Total Pending Amount</div>
-                <div className="text-lg font-semibold">${reportSummary.totalPendingPayments.toFixed(2)}</div>
+                <div className="text-lg font-semibold">{formatINR(reportSummary.totalPendingPayments)}</div>
               </div>
               <div>
                 <div className="text-xs text-muted-foreground">New Subscriptions</div>

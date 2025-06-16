@@ -23,7 +23,9 @@ import {
   Users,
   Heart,
   Gift,
+  IndianRupee,
 } from 'lucide-react';
+import { formatINR } from '../../utils/currencyUtils';
 
 const DonationDashboardPage: React.FC = () => {
   const [donations, setDonations] = useState<Donation[]>([]);
@@ -170,7 +172,7 @@ const DonationDashboardPage: React.FC = () => {
     {
       key: 'amount',
       header: 'Amount',
-      render: (d) => `$${d.amount.toFixed(2)}`,
+      render: (d) => formatINR(d.amount),
     },
     {
       key: 'status',
@@ -202,7 +204,7 @@ const DonationDashboardPage: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card title="Total Donated (Completed)" className="text-center">
           <Gift size={32} className="mx-auto text-green-500 dark:text-green-400 mb-2" />
-          <p className="text-3xl font-bold">${summaryStats.totalDonated.toLocaleString()}</p>
+          <p className="text-3xl font-bold">{formatINR(summaryStats.totalDonated)}</p>
         </Card>
         <Card title="Unique Donors (Completed)" className="text-center">
           <Users size={32} className="mx-auto text-blue-500 dark:text-blue-400 mb-2" />
